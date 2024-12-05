@@ -1,61 +1,48 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { areaList, memberLogin } from '../api/member';
 import { useNavigate } from 'react-router-dom';
 function Login() {
 
-    const [아이디, 변경아이디] = useState('');
-    const [비밀번호, 변경비밀번호] = useState('');
-    const [areas, setAreas] = useState([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        startList();
-    }, []);
+    const idRef = useRef('');
+    const pwRef = useRef('');
 
-    // useMemo(startList(), [startList]);
+    const loginAction = () => {
+        const idValue = idRef.current.value;
+        const pwValue = pwRef.current.value;
 
-    function startList() {
-        console.log('----시작');
-        areaList().then(res => {
-            setAreas(res.data.data);
-            console.log(areas);
+        let obj = Object();
+        obj.userId = idValue;
+        obj.userPw = pwValue;
+        memberLogin(obj).then(res => {
+            const data = res.data;
+
+
+            if (data.code === '200' && data.data === 'Y') {
+                console.log('성공');
+                alert('로그인 되었습니다.');
+                navigate('/');
+            } else {
+                idRef.current.value = '';
+                pwRef.current.value = '';
+                idRef.current.focus();
+                alert('아이디와 비밀번호를 확인해주세요');
+            }
+
+        }).catch(err => {
+            alert('err');
         })
-    }
 
+    }
 
     return (
         <div className='App'>
-            <input type='text' placeholder='아이디 입력' value={아이디} onChange={e => {
-                변경아이디(e.target.value);
-            }} />
-            <input type='text' placeholder='비밀번호 입력' value={비밀번호} onChange={e => {
-                변경비밀번호(e.target.value);
-            }} />
-            <input type='button' value='중복 체크' onClick={
+            <input type='text' placeholder='아이디 입력' ref={idRef} />
+            <input type='text' placeholder='비밀번호 입력' ref={pwRef} />
+            <input type='button' value='로그인' onClick={
                 () => {
-                    let obj = new Object();
-                    obj.userId = 아이디;
-                    obj.userPw = 비밀번호;
-
-                    const check = memberLogin(obj);
-                    console.log(obj);
-                    check.then(res => {
-                        console.log(res.data.data);
-                        if (res.data.data === "Y") {
-                            alert('로그인 성공');
-                            navigate('/mypage');
-                        } else {
-                            alert('로그인 실패');
-                            navigate('/login')
-                        }
-                    })
-
-                    check.catch(err => {
-
-                        console.log(err);
-                    })
-
-
+                    loginAction();
                 }
             } />
 
