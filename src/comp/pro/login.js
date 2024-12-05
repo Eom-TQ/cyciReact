@@ -8,6 +8,11 @@ function Login() {
     const idRef = useRef('');
     const pwRef = useRef('');
 
+    useEffect(() => {
+        localStorage.removeItem('userId');
+    }, []);
+
+
     const loginAction = () => {
         const idValue = idRef.current.value;
         const pwValue = pwRef.current.value;
@@ -22,7 +27,9 @@ function Login() {
             if (data.code === '200' && data.data === 'Y') {
                 console.log('성공');
                 alert('로그인 되었습니다.');
-                navigate('/');
+                localStorage.setItem('userId', idValue);
+                localStorage.setItem('auto', 'random UUID JWT');
+                navigate('/itemList');
             } else {
                 idRef.current.value = '';
                 pwRef.current.value = '';

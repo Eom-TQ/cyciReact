@@ -6,6 +6,7 @@ import Calc1 from './comp/calc/study01'
 import Inp1 from './comp/inp/input01'
 import Oup1 from './comp/inp/output01'
 import Ref from './comp/inp/Ref01'
+import ProItemList from './comp/pro/ItemList'
 
 import ProJoin from './comp/pro/Join'
 import Login from './comp/pro/login'
@@ -26,10 +27,11 @@ function App() {
           <Route path={"/ref1"} element={<Ref />} />
 
           <Route path={"/pro1"} element={<ProJoin />} />
-
           <Route path={"/ax1"} element={<Ax1 />} />
+          <Route path={"/itemList"} element={<ProItemList />}></Route>
           <Route path={"/login"} element={<Login />} />
           <Route path={"/mypage"} element={<Mypage />} />
+
         </Routes>
       </BrowserRouter>
     </div>
@@ -61,7 +63,9 @@ function Home() {
 
       <h4>과제</h4>
       <Link to="/pro1">회원가입 창</Link><br />
-      <Link to="/login">로그인 창</Link>
+      <Link to="/login">로그인 창</Link><br />
+
+      <Link to="/itemList">아이템</Link>
     </div>
   )
 }
