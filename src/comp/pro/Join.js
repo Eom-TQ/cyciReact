@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { areaList, memberIdCheck } from '../api/member';
+import { useEffect, useRef, useState } from 'react';
+import { areaList, memberIdCheck, memberRegist } from '../api/member';
 function Study() {
 
     const [아이디, 변경아이디] = useState('');
@@ -12,6 +12,9 @@ function Study() {
 
     const [areas, setAreas] = useState([]);
 
+    const [idChk, setIdChk] = useState('');
+
+    const idRef = useRef();
 
     useEffect(() => {
         startList();
@@ -29,6 +32,11 @@ function Study() {
     }
 
     function joinAction() {
+
+        if (아이디.trim.length == 0 || 아이디 !== idChk) {
+            alert('아이디 중복 체크부터 해주세요');
+        }
+
         const obj = {
             'userId': 아이디,
             'userPw': password,
@@ -40,12 +48,18 @@ function Study() {
         }
 
         console.log(obj)
+        memberRegist(obj).then(res => {
+            console.log(res);
+        }).catch(err => {
+            console.log('err: ', err);
+            console.log(`err: ${err}`);
+        })
     }
 
 
     return (
         <div className='App'>
-            <input type='text' placeholder='아이디 입력' value={아이디} onChange={e => {
+            <input type='text' placeholder='아이디 입력' ref={idRef} value={아이디} onChange={e => {
                 변경아이디(e.target.value);
             }} />
             <input type='button' value='중복 체크' onClick={
@@ -58,6 +72,8 @@ function Study() {
                     check.then(res => {
                         console.log('==== 성공 !!');
                         console.log(res);
+                        setIdChk(아이디);
+                        idRef.current.disabled = true;
                     })
 
                     check.catch(err => {
@@ -102,9 +118,9 @@ function Study() {
                 }}></input>
 
             <br />지역 : &nbsp;
-            <select onChange={(e => { setArea(e.target.vlaue) })}>
+            <select onChange={(e => { setArea(e.target.value) })}>
                 {areas.map((item, index) => (
-                    <option key={index} >
+                    <option key={index} value={index} >
                         {item.areaName}
                     </option>
                 ))}
